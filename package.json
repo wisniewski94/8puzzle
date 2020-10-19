@@ -22,5 +22,10 @@
   "bugs": {
     "url": "https://github.com/wisniewski94/8puzzle/issues"
   },
-  "homepage": "https://github.com/wisniewski94/8puzzle#readme"
+  "homepage": "https://github.com/wisniewski94/8puzzle#readme",
+  "devDependencies": {
+    "eslint": "^7.11.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.1"
+  }
 }
