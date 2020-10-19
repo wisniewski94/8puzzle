@@ -1,5 +1,7 @@
-let state = [1, 2, 3, 4, 5, 6, 7, 8, 0];
-
+/**
+ * Returns an array of possible moves for the given state. Ex. ['left', 'right', 'up'];
+ * @param  {} array
+ */
 const availableMoves = (array) => {
 	const index = array.indexOf(0);
 	const row = Math.floor(index / 3);
@@ -12,19 +14,28 @@ const availableMoves = (array) => {
 	return possible_moves;
 }
 
+// Offset map
 const moveOffset = {
 	'left': -1,
 	'up': -3,
 	'right': 1,
 	'down': 3
 }
-
+/**
+ * Replaces items in array
+ * @param  {array} array - State to be modified
+ * @param  {number} index - Index of item to be replaced
+ * @param  {number} offset - Move offset
+ */
 const swap = (array, index, offset) => {
 	[array[index], array[index + offset]] = [array[index + offset], array[index]]
 	return array;
 }
-
-const availableStates = state => {
+/**
+ * Returns an array of possible states after moving empty tile
+ * @param  {array} state - Initial state
+ */
+const availableStates = (state) => {
 	const moves = availableMoves(state);
 	const index = state.indexOf(0);
 	let states = [];
@@ -37,6 +48,10 @@ const availableStates = state => {
 	return states;
 }
 
+/**
+ * Moves the empty tile in random direction.
+ * @param  {array} array - Array to be modified
+ */
 const shuffle = ([...array]) => {
 	const index = array.indexOf(0);
 	const moves = availableMoves(array);
@@ -45,20 +60,41 @@ const shuffle = ([...array]) => {
 	swap(array, index, offset);
 	return array;
 }
-
-for (let i = 0; i <= 100; i += 1) {
-	state = shuffle(state);
+/**
+ * Shuffles puzzle randomly n times.
+ * @param  {number} n - repeat count
+ */
+const shuffleTimes = (n) => {
+	let state = [1, 2, 3, 4, 5, 6, 7, 8, 0];
+	for (let i = 0; i <= n; i += 1) {
+		state = shuffle(state);
+	}
+	return state;
 }
+
+/**
+ * Tests if two arrays are equal.
+ * @param  {array} array1
+ * @param  {array} array2
+ */
 const arraysEquality = (array1, array2) => {
 	return JSON.stringify(array1) == JSON.stringify(array2);
 }
-
+/**
+ * Checks if state exists in open or closed list.
+ * @param  {array} search - Array that is being searched.
+ * @param  {array} array - Target array
+ */
 const searchArrayInArrays = (search, array) => {
 	const searchJson = JSON.stringify(search);
 	const arrayJson = array.map(el => JSON.stringify(el.state));
 	return arrayJson.indexOf(searchJson);
 }
-
+/**
+ * Calculates Manhattan Distance from initial to goal state
+ * @param  {array} state
+ * @param  {array} goal
+ */
 const manhattanDist = (state, goal) => {
 	let dist = 0;
 	state.forEach((el, index) => {
@@ -72,6 +108,11 @@ const manhattanDist = (state, goal) => {
 	return dist;
 };
 
+/**
+ * Generates solution path
+ * @param  {array} array - Closed list
+ * @param  {array} current - Last node from solution path
+ */
 const findPath = (array, current) => {
 	let g = 1;
 	let path = [current];
@@ -87,7 +128,13 @@ const findPath = (array, current) => {
 }
 
 const goal = [1, 2, 3, 4, 5, 6, 7, 8, 0];
-const aSearch = state => {
+
+/**
+ * A* algorithm that solves 8 Puzzle
+ * @param  {array} state - puzzle to be solved
+ */
+
+const aSearch = (state) => {
 	console.time('a');
 	let open = [];
 	let closed = [];
@@ -130,4 +177,6 @@ const aSearch = state => {
 	}
 
 }
+
+const state = shuffleTimes(10);
 aSearch(state);
