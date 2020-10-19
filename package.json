@@ -1,0 +1,26 @@
+{
+  "name": "8puzzle",
+  "version": "1.0.0",
+  "description": "8 puzzle case study using A* algorithm",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wisniewski94/8puzzle.git"
+  },
+  "keywords": [
+    "8puzzle",
+    "puzzle",
+    "astar",
+    "algorithm",
+    "javascript"
+  ],
+  "author": "Wiktor Wiśniewski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wisniewski94/8puzzle/issues"
+  },
+  "homepage": "https://github.com/wisniewski94/8puzzle#readme"
+}
