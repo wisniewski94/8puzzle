@@ -1,9 +1,11 @@
 /* eslint-disable func-names */
 /* eslint-disable no-console */
+
 /**
  * Returns an array of possible moves for the given state. Ex. ['left', 'right', 'up'];
  * @param  {} array
  */
+
 const availableMoves = (array) => {
   const index = array.indexOf(0);
   const row = Math.floor(index / 3);
@@ -23,21 +25,25 @@ const moveOffset = {
   right: 1,
   down: 3,
 };
+
 /**
  * Replaces items in array
  * @param  {array} array - State to be modified
  * @param  {number} index - Index of item to be replaced
  * @param  {number} offset - Move offset
  */
+
 const swap = (array, index, offset) => {
   const arrayCopy = [...array];
   [arrayCopy[index], arrayCopy[index + offset]] = [arrayCopy[index + offset], arrayCopy[index]];
   return arrayCopy;
 };
+
 /**
  * Returns an array of possible states after moving empty tile
  * @param  {array} state - Initial state
  */
+
 const availableStates = (state) => {
   const moves = availableMoves(state);
   const index = state.indexOf(0);
@@ -55,6 +61,7 @@ const availableStates = (state) => {
  * Moves the empty tile in random direction.
  * @param  {array} array - Array to be modified
  */
+
 const shuffle = ([...array]) => {
   let arrayCopy = array;
   const index = arrayCopy.indexOf(0);
@@ -64,10 +71,12 @@ const shuffle = ([...array]) => {
   arrayCopy = swap(arrayCopy, index, offset);
   return arrayCopy;
 };
+
 /**
  * Shuffles puzzle randomly n times.
  * @param  {number} n - repeat count
  */
+
 const shuffleTimes = (n) => {
   let state = [1, 2, 3, 4, 5, 6, 7, 8, 0];
   for (let i = 0; i <= n; i += 1) {
@@ -81,7 +90,9 @@ const shuffleTimes = (n) => {
  * @param  {array} array1
  * @param  {array} array2
  */
+
 const arraysEquality = (array1, array2) => JSON.stringify(array1) === JSON.stringify(array2);
+
 /**
  * Checks if state exists in open or closed list.
  * @param  {array} search - Array that is being searched.
@@ -92,6 +103,7 @@ const searchArrayInArrays = (search, array) => {
   const arrayJson = array.map((el) => JSON.stringify(el.state));
   return arrayJson.indexOf(searchJson);
 };
+
 /**
  * Calculates Manhattan Distance from initial to goal state
  * @param  {array} state
@@ -110,14 +122,15 @@ const manhattanDist = (state, goal) => {
   return dist;
 };
 
+const findPathHandler = (currentCopy) => function (el) {
+  return el.state === currentCopy.previous;
+};
+
 /**
  * Generates solution path
  * @param  {array} array - Closed list
  * @param  {array} current - Last node from solution path
  */
-const findPathHandler = (currentCopy) => function (el) {
-  return el.state === currentCopy.previous;
-};
 
 const findPath = (array, current) => {
   let currentCopy = { ...current };
