@@ -4,7 +4,7 @@
   "description": "8 puzzle case study using A* algorithm",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --watch"
   },
   "repository": {
     "type": "git",
@@ -24,8 +24,10 @@
   },
   "homepage": "https://github.com/wisniewski94/8puzzle#readme",
   "devDependencies": {
+    "babel-preset-jest": "^27.2.0",
     "eslint": "^7.11.0",
     "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-plugin-import": "^2.22.1"
+    "eslint-plugin-import": "^2.22.1",
+    "jest": "^27.3.1"
   }
 }

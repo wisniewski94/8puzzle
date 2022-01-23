@@ -158,7 +158,7 @@ const removeDuplicates = (current) => function (el) {
  */
 
 const aSearch = (state) => {
-  console.time('a');
+  // console.time('a');
   let open = [];
   const closed = [];
   let iteration = 0;
@@ -198,8 +198,9 @@ const aSearch = (state) => {
       closed.push(current);
       const path = findPath(closed, current);
       const stats = { path, g: current.g, iteration };
-      console.log(stats);
-      console.timeEnd('a');
+      // console.log(stats);
+      console.log(open.length);
+      // console.timeEnd('a');
       return stats;
     }
   }
@@ -207,4 +208,5 @@ const aSearch = (state) => {
 };
 
 const state = shuffleTimes(10);
+console.log(state);
 aSearch(state);
