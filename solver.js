@@ -27,16 +27,13 @@ class AStarSolver {
 
   aStarSearch() {
     const { goal } = this;
-    const STEP = 0;
-    let distance = 0;
     let foundSolution;
 
     this.openList.push(this.activeNode);
-    this.activeNode.fScore = this.getManhattanDistance(this.activeNode.node.board, goal) + 0;
+    this.activeNode.fScore = this.getManhattanDistance(this.activeNode.node.board, goal) + 1;
 
     foundSolution = checkIfArraysEqual(this.activeNode.node.board, goal);
     while (foundSolution === false) {
-      distance += STEP;
       const nextNodes = this.activeNode.node.nextAvailableStates;
       // eslint-disable-next-line no-loop-func
       nextNodes.forEach((node) => {
@@ -47,8 +44,9 @@ class AStarSolver {
         if (searchClosedIndex === -1) {
           const searchInOpen = this.openList.map((el) => JSON.stringify(el.node.board));
           const searchOpenIndex = searchInOpen.indexOf(search);
-          const gScore = this.activeNode.gScore + distance;
+          const gScore = this.activeNode.gScore + 1;
           const hScore = this.getManhattanDistance(neighbour.board, goal);
+          console.log(hScore);
           const fScore = hScore + gScore;
           const newNode = {
             node: neighbour,
@@ -73,8 +71,7 @@ class AStarSolver {
       this.openList = withoutCurrent;
 
       // eslint-disable-next-line max-len
-      this.activeNode = this.openList.reduce((prev, curr) => (prev.fScore < curr.fScore ? prev : curr));
-      console.log(this.activeNode.fScore);
+      this.activeNode = this.openList.reduce((prev, curr) => (curr.fScore < prev.fScore ? curr : prev));
       foundSolution = checkIfArraysEqual(this.activeNode.node.board, goal);
     }
 
