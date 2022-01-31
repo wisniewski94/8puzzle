@@ -1,9 +1,16 @@
-const checkIfArraysEqual = (arr1, arr2) => JSON.stringify(arr1) === JSON.stringify(arr2);
+const checkIfArraysEqual = (arr1, arr2) => {
+  if (arr1.length !== arr2.length) return false;
 
-const searchArrayInArrays = (array, arrays) => {
-  const searchJson = JSON.stringify(array);
-  const arrayJson = arrays.map((el) => JSON.stringify(el.state));
-  return arrayJson.indexOf(searchJson);
+  for (let i = 0; i < arr1.length; i++) {
+    if (arr1[i] !== arr2[i]) return false;
+  }
+  return true;
+};
+
+const findBoardInList = (searchSet, array) => {
+  const search = JSON.stringify(array);
+  const searchInList = searchSet.map((el) => JSON.stringify(el.node.board));
+  return searchInList.indexOf(search);
 };
 
 class AStarSolver {
@@ -27,57 +34,66 @@ class AStarSolver {
 
   aStarSearch() {
     const { goal } = this;
-    let foundSolution;
 
     this.openList.push(this.activeNode);
     this.activeNode.fScore = this.getManhattanDistance(this.activeNode.node.board, goal) + 1;
 
-    foundSolution = checkIfArraysEqual(this.activeNode.node.board, goal);
-    while (foundSolution === false) {
-      const nextNodes = this.activeNode.node.nextAvailableStates;
-      // eslint-disable-next-line no-loop-func
-      nextNodes.forEach((node) => {
-        const neighbour = node;
-        const search = JSON.stringify(neighbour.board);
-        const searchInClosed = this.closedList.map((el) => JSON.stringify(el.node.board));
-        const searchClosedIndex = searchInClosed.indexOf(search);
-        if (searchClosedIndex === -1) {
-          const searchInOpen = this.openList.map((el) => JSON.stringify(el.node.board));
-          const searchOpenIndex = searchInOpen.indexOf(search);
-          const gScore = this.activeNode.gScore + 1;
-          const hScore = this.getManhattanDistance(neighbour.board, goal);
-          console.log(hScore);
-          const fScore = hScore + gScore;
-          const newNode = {
-            node: neighbour,
-            gScore,
-            fScore,
-            previous: this.activeNode,
-          };
+    while (this.openList.length > 0) {
+      const foundSolution = checkIfArraysEqual(this.activeNode.node.board, goal);
+      if (!foundSolution) {
+        const nextNodes = this.activeNode.node.nextAvailableStates;
+        // eslint-disable-next-line no-loop-func
+        nextNodes.forEach((node) => {
+          const neighbour = node;
+          const nodeInClosed = findBoardInList(this.closedList, neighbour.board);
+          if (nodeInClosed === -1) {
+            const nodeInOpen = findBoardInList(this.openList, neighbour.board);
+            const gScore = this.activeNode.gScore + 1;
+            const hScore = this.getManhattanDistance(neighbour.board, goal);
+            const fScore = hScore + gScore;
+            const newNode = {
+              node: neighbour,
+              gScore,
+              fScore,
+              previous: this.activeNode,
+            };
 
-          if (searchOpenIndex !== -1) {
-            if (this.openList[searchOpenIndex].fScore > fScore) {
-              this.openList[searchOpenIndex] = newNode;
+            if (nodeInOpen !== -1) {
+              if (this.openList[nodeInOpen].fScore > fScore) {
+                this.openList[nodeInOpen] = newNode;
+              }
+            } else {
+              this.openList.push(newNode);
             }
-          } else {
-            this.openList.push(newNode);
           }
-        }
-      });
+        });
 
-      this.closedList.push(this.activeNode);
-      // eslint-disable-next-line max-len
-      const withoutCurrent = this.openList.filter((node) => JSON.stringify(node) !== JSON.stringify(this.activeNode));
-      this.openList = withoutCurrent;
+        this.closedList.push(this.activeNode);
+        // eslint-disable-next-line max-len
+        const withoutCurrent = this.openList.filter((node) => {
+          if (node.node.board.length !== this.activeNode.node.board.length) {
+            return true;
+          }
 
-      // eslint-disable-next-line max-len
-      this.activeNode = this.openList.reduce((prev, curr) => (curr.fScore < prev.fScore ? curr : prev));
-      foundSolution = checkIfArraysEqual(this.activeNode.node.board, goal);
+          for (let i = 0; i < node.node.board.length; i++) {
+            if (node.node.board[i] !== this.activeNode.node.board[i]) {
+              return true;
+            }
+          }
+
+          return false;
+        });
+        this.openList = withoutCurrent;
+
+        // eslint-disable-next-line max-len
+        this.activeNode = this.openList.reduce((prev, curr) => (curr.fScore < prev.fScore ? curr : prev));
+      } else {
+        this.solution = this.reconstructPath(this.activeNode);
+        console.log(this.openList.length);
+        return this.solution;
+      }
     }
-
-    if (foundSolution) {
-      this.solution = this.reconstructPath(this.activeNode);
-    }
+    return null;
   }
 
   getManhattanDistance(activeNode, goal) {
@@ -119,7 +135,9 @@ class AStarSolver {
   }
 
   solve() {
+    console.time('b');
     this.aStarSearch();
+    console.timeEnd('b');
   }
 }
 

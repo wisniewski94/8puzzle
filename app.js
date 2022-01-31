@@ -158,7 +158,6 @@ const removeDuplicates = (current) => function (el) {
  */
 
 const aSearch = (state) => {
-  // console.time('a');
   let open = [];
   const closed = [];
   let iteration = 0;
@@ -192,6 +191,7 @@ const aSearch = (state) => {
       });
       closed.push(current);
       open = open.filter(removeDuplicates(current));
+
       const lowest = open.reduce((res, el) => (el.f < res.f ? el : res));
       current = lowest;
     } else {
@@ -199,7 +199,6 @@ const aSearch = (state) => {
       const path = findPath(closed, current);
       const stats = { path, g: current.g, iteration };
       // console.log(stats);
-      console.log(open.length);
       // console.timeEnd('a');
       return stats;
     }
@@ -207,6 +206,10 @@ const aSearch = (state) => {
   return null;
 };
 
-const state = shuffleTimes(10);
+const state = shuffleTimes(90);
 console.log(state);
-aSearch(state);
+const t = aSearch([
+  1, 8, 6, 4, 5,
+  0, 7, 2, 3,
+]);
+console.log(t.path.length);
