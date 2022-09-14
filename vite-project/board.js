@@ -1,3 +1,12 @@
+const checkIfArraysEqual = (arr1, arr2) => {
+  if (arr1.length !== arr2.length) return false;
+
+  for (let i = 0; i < arr1.length; i += 1) {
+    if (arr1[i] !== arr2[i]) return false;
+  }
+  return true;
+};
+
 const swapElements = (array, index, offset) => {
   const arrayCopy = [...array];
   [arrayCopy[index], arrayCopy[index + offset]] = [arrayCopy[index + offset], arrayCopy[index]];
@@ -8,7 +17,10 @@ class Board {
   constructor(board) {
     this.board = board || [1, 2, 3, 4, 5, 6, 7, 8, 0];
     const size = Math.sqrt(this.board.length);
+    const goal = [...Array(this.board.length - 1).keys()].map((el) => el + 1);
+    this.goal = goal;
     this.size = size;
+    this.goal.push(0);
     this.moveMapping = {
       LEFT: -1,
       UP: -(size),
@@ -41,6 +53,11 @@ class Board {
     return board.indexOf(0);
   }
 
+  checkIfMovable(index) {
+    const movableTiles = this.findMovableTiles();
+    return movableTiles.includes(index);
+  }
+
   findAvailableMoves() {
     const { emptyTileIndex } = this;
 
@@ -61,11 +78,13 @@ class Board {
     const positionInRow = Math.floor(emptyTileIndex / this.size);
     const positionInColumn = emptyTileIndex % this.size;
 
-    const movableTiles = [];
-    if (positionInColumn > 0) movableTiles.push(emptyTileIndex - 1);
-    if (positionInColumn < this.size - 1) movableTiles.push(emptyTileIndex + 1);
-    if (positionInRow < this.size - 1) movableTiles.push(emptyTileIndex + this.size);
-    if (positionInRow > 0) movableTiles.push(emptyTileIndex - this.size);
+    const movableTilesIndex = [];
+    if (positionInColumn > 0) movableTilesIndex.push(emptyTileIndex - 1);
+    if (positionInColumn < this.size - 1) movableTilesIndex.push(emptyTileIndex + 1);
+    if (positionInRow < this.size - 1) movableTilesIndex.push(emptyTileIndex + this.size);
+    if (positionInRow > 0) movableTilesIndex.push(emptyTileIndex - this.size);
+
+    const movableTiles = movableTilesIndex.map((el) => this.board[el]);
 
     return movableTiles;
   }
@@ -75,6 +94,15 @@ class Board {
     const randomIndex = Math.floor(Math.random() * availableMoves.length);
     const randomMove = availableMoves[randomIndex];
     return moveMapping[randomMove];
+  }
+
+  moveTile(tile) {
+    const { board, emptyTileIndex } = this;
+    const tileToMove = tile;
+    const index = board.indexOf(tileToMove);
+    const offset = emptyTileIndex - index;
+    this.board = swapElements(board, index, offset);
+    return this.moveMapping[offset];
   }
 
   shuffleOnce() {
@@ -98,6 +126,12 @@ class Board {
 
     this.board = newArray;
   }
+
+  checkIfWin() {
+    const { board, goal } = this;
+    const equalsGoal = checkIfArraysEqual(board, goal);
+    return equalsGoal;
+  }
 }
 
-module.exports = Board;
+export default Board;

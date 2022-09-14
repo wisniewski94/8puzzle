@@ -6,6 +6,9 @@
   "scripts": {
     "test": "jest --watch"
   },
+  "server": {
+   "host": true
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wisniewski94/8puzzle.git"
